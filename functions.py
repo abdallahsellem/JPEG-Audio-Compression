@@ -1,6 +1,7 @@
 from collections import Counter
 
 import numpy as np
+from collections import Counter
 
 import pickle
 
@@ -148,7 +149,8 @@ def get_freq_dict(array: list) -> dict:
     :return: frequency table
     """
     #
-    data = Counter(array)
+    data = Counter(array)    
+    print(data.items())
     result = {k: d / len(array) for k, d in data.items()}
     return result
 
@@ -159,10 +161,13 @@ def find_huffman(p: dict) -> dict:
     :param dict p: frequency table
     :returns: huffman code for each symbol
     """
+    if len(p) == 1:
+        return {list(p.keys())[0]: ''}
     # Base case of only two symbols, assign 0 or 1 arbitrarily; frequency does not matter
     if len(p) == 2:
         return dict(zip(p.keys(), ['0', '1']))
-
+    
+    # print(len(p))
     # Create a new distribution by merging lowest probable pair
     p_prime = p.copy()
     a1, a2 = lowest_prob_pair(p)
@@ -184,27 +189,53 @@ def lowest_prob_pair(p):
 
 
 def run_length_encode_2d(array):
+    flattenArray=array
     encoded_array = []
-    for row in array:
-        current_run = row[0]
-        run_length = 1
-
-        for element in row[1:]:
-            if element == current_run:
-                run_length += 1
-            else:
-                encoded_array.append((current_run, run_length))
-                current_run = element
-                run_length = 1
-
+    cnt=0
+    run=0 
+    num=flattenArray[0]
+    for NextNum in flattenArray[0:] :
+        if(NextNum==num):
+            cnt+=1 
+        else:
+            encoded_array.append((num, cnt))
+            run+=cnt
+            cnt=1
+            num=NextNum
+            
         # Append the last run
-        encoded_array.append((current_run, run_length))
-
+    encoded_array.append((num, cnt))
     return encoded_array
 
-def run_length_decode_2d(encoded_array,wid,len):
+def run_length_decode_2d(encoded_array,wid,MatLen):
     decoded_rows = []
+    cnt=0 
     for run in encoded_array:
         value, length = run
+        cnt+=length
         decoded_rows.extend([value] * length)
-    return np.array(decoded_rows).reshape(wid, len)
+    return np.array(decoded_rows).reshape(wid, MatLen)
+
+def normalize(value, min_orig, max_orig, min_target, max_target):
+    normalized = min_target + (value - min_orig) * (max_target - min_target) / (max_orig - min_orig)
+    return normalized
+
+def restore(normalized, min_orig, max_orig, min_target, max_target):
+    
+    restored = min_orig + (normalized - min_target) * (max_orig - min_orig) / (max_target - min_target)
+
+    return restored
+
+def inverse_huffman(huffman_code):
+    inverse_dict = {}
+    for symbol, code in huffman_code.items():
+        inverse_dict[code] = symbol
+    return inverse_dict
+
+
+def inverse_get_freq_dict(freq_dict):
+    array = []
+    for bits, (value,frequency) in freq_dict.items():
+        count = int(frequency * len(array))
+        array.extend([value] * count)
+    return array
