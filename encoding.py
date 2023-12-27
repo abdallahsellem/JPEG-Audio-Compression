@@ -3,8 +3,6 @@ from math import ceil
 import cv2
 import struct
 
-
-
 import numpy as np
 import pickle
 from functions import *
