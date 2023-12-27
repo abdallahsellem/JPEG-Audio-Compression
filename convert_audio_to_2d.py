@@ -3,7 +3,7 @@ from scipy.io import wavfile
 
 def read_sound_file(input_file):
     # Example usage:
-    input_file = 'file_example_WAV_5MG.wav'
+    input_file = 'tessst.wav'
     sample_rate, audio_data = wavfile.read(input_file)
     return sample_rate ,audio_data
 
