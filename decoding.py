@@ -7,7 +7,6 @@ import struct
 import numpy as np
 
 from functions import *
-from convert_audio_to_2d import *
 windowSize=8
 QTY = np.array([[16, 11, 10, 16, 24, 40, 51, 61],  #  quantization table
                 [12, 12, 14, 19, 26, 48, 60, 55],
@@ -40,10 +39,9 @@ def load_pairs_from_binary_file(file_path):
     return pairs
 
 
-def decoding():
+def decoding(file_name):
    
-    print("decooooooooooding")
-    loaded_data = load_pairs_from_binary_file("EncodedFile.bin")
+    loaded_data = load_pairs_from_binary_file(file_name)
     sample_rate,channelLength=loaded_data.pop()
     crEncoded=loaded_data
     cbEncoded=loaded_data
@@ -73,7 +71,6 @@ def decoding():
     cbDecoded=np.asarray(cbDecoded)
     crDecoded=crDecoded.reshape((channelLength,channelWidth),)
     cbDecoded=cbDecoded.reshape((channelLength,channelWidth))
-    print(crDecoded.shape)
 # Extend back to the original range
 
     hBlocksForC = int(channelLength / windowSize)  # number of blocks in the horizontal direction for Matrix
@@ -100,9 +97,13 @@ def decoding():
     FirstChannel=FirstChannel+128 
     SecondChannel=SecondChannel+128
     # Convert flattened arrays to column vectors
+
+        
     FirstChannel = FirstChannel.reshape(-1, 1)
     SecondChannel = SecondChannel.reshape(-1, 1)
-
+    FirstChannel=np.clip(FirstChannel,0,32000)
+    
+        
     # Concatenate the vectors along axis 1 to create a matrix
-    decoded_signal = np.concatenate((FirstChannel, SecondChannel), axis=1)
-    wavfile.write("output_audio.wav", sample_rate, decoded_signal.astype(np.int16))
+    decoded_signal = np.concatenate((FirstChannel, FirstChannel), axis=1)
+    wavfile.write("output_wave_decoded.wav", sample_rate, decoded_signal.astype(np.int16))

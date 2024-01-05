@@ -8,7 +8,6 @@ import struct
 import numpy as np
 import pickle
 from functions import *
-from convert_audio_to_2d import *
 # define quantization tables
 QTY = np.array([[16, 11, 10, 16, 24, 40, 51, 61],  #  quantization table
                 [12, 12, 14, 19, 26, 48, 60, 55],
@@ -36,10 +35,10 @@ def save_pairs_to_binary_file(pairs, file_path):
             # Assuming each pair is a tuple of two integers
             packed_data = struct.pack('ii', *pair)
             file.write(packed_data)
-def encoding():
+def encoding(file_name):
 
     #read audioFile 
-    sample_rate,(first_channel,second_channel) = convert_audio_to_2d("file_example_WAV_5MG.wav")
+    sample_rate,(first_channel,second_channel) = convert_audio_to_2d(file_name)
     width = len(first_channel[0])
     height = len(first_channel)
     first_channel = np.zeros((height, width), np.float16) + first_channel
@@ -126,6 +125,7 @@ def encoding():
     crEncoded = run_length_encode_2d(crEncoded)
     cbEncoded = run_length_encode_2d(cbEncoded)
     crEncoded.append((sample_rate,channelLength))
+    
     save_pairs_to_binary_file(crEncoded,"EncodedFile.bin")
     # np.savez('EncodedFile.npz', array1=pairs_array1, array2=pairs_array2,array3=meta_data)  
     
