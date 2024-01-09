@@ -22,7 +22,7 @@ Finally , we are storing the Encoded binary code using numpy
 
 for encoding
 
-    python main.py fileExample.wav encode
+    python main.py file_example.wav encode
 
 for decoding 
 
