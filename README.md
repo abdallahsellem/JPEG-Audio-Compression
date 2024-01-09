@@ -13,3 +13,19 @@ An intermediary stream consists of encoded DC and AC components, and an EOB (end
   
 Finally , we are storing the Encoded binary code using numpy 
 
+
+### to run code 
+
+- write in terminal "python main.py <file_name> <Operation_type["encode","decode"]>"
+
+***Examples:***
+
+for encoding
+
+    python main.py fileExample.wav encode
+
+for decoding 
+
+    python main.py EncodedFile.bin decode
+
+
